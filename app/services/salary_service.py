@@ -1,4 +1,4 @@
-from models.salary import SalaryOutput, TaxConfig, TaxBracket
+from app.models.salary import SalaryOutput, TaxConfig, TaxBracket
 
 class SalaryService:
     # Constants regulation

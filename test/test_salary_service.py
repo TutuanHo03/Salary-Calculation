@@ -1,5 +1,5 @@
 import pytest
-from app.models.salary import TaxConfig, TaxBracket, SalaryOutput
+from app.models.salary import SalaryOutput, TaxConfig, TaxBracket
 from app.services.salary_service import SalaryService
 
 class TestSalaryService:
