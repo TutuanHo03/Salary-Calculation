@@ -43,8 +43,8 @@ jobs:
 
       - name: Build Images
         run: |
-          docker build -f app/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/salary-api:latest ./app
-          docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/salary-frontend:latest ./frontend
+          docker build -f app/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/python_api-backend:latest ./app
+          docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:latest ./frontend
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -54,7 +54,7 @@ jobs:
 
       - name: 🚀 Push Images
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/salary-api:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/salary-frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/python_api-backend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:latest
 
   
