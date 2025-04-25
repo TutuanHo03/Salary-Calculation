@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: salary-api-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    restart: always
+    networks:
+      - salary-app-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: salary-app-frontend
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend:/frontend
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - salary-app-network
+
+networks:
+  salary-app-network:
+    driver: bridge
