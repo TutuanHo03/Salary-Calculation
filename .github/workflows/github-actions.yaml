@@ -17,21 +17,19 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.8"
+          python-version: "3.9"
 
-      - name: Install uv
+      - name: 📦 Install dependencies
         run: |
-          curl -Ls https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov fastapi pandas openpyxl httpx
+          pip install -r app/requirements.txt
+          pip install -r frontend/requirements.txt
 
-      - name: Install dependencies with uv
+      - name: 🧪 Run Unit Tests
         run: |
-          uv sync
-
-      - name: Run Unit Tests
-        run: |
-          pytest test/test_salary_service.py
-          pytest test/test_salary_routes.py
+          python -m pytest test/test_salary_service.py
+          python -m pytest test/test_salary_routes.py
 
   build-push:
     name: Build and Push Docker Images
