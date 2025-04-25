@@ -25,6 +25,17 @@ jobs:
           pip install pytest pytest-cov fastapi pandas openpyxl httpx
           pip install -r app/requirements.txt
           pip install -r frontend/requirements.txt
+        
+      - name: 🧪 Setup test environment
+        run: |
+          # Đảm bảo conftest.py thiết lập PYTHONPATH đúng
+          cat > test/conftest.py << 'EOF'
+          import sys
+          import os
+          
+          # Thêm thư mục gốc vào Python path
+          sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+          EOF
 
       - name: 🧪 Run Unit Tests
         run: |

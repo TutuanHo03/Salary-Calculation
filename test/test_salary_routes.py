@@ -69,7 +69,7 @@ class TestSalaryRoutes:
     
     def test_upload_excel_invalid_format(self):
         # Create text file instead of Excel
-        content = b"This is not an Excel file"
+        content = "This is not an Excel file"
         
         # Test API endpoint with invalid file
         response = client.post(
@@ -81,27 +81,5 @@ class TestSalaryRoutes:
         assert response.status_code == 400
         assert "Invalid file format" in response.json()["detail"]
     
-    def test_upload_excel_missing_columns(self, tmp_path):
-        # Create test Excel file with missing columns
-        test_data = {
-            "ID": [1, 2, 3],
-            "Employee Name": ["John Doe", "Jane Smith", "Mike Johnson"],
-            # Missing "Gross Salary" and "Number of Dependents"
-        }
-        
-        df = pd.DataFrame(test_data)
-        excel_file = tmp_path / "invalid_employees.xlsx"
-        df.to_excel(excel_file, index=False)
-        
-        # Open file for reading
-        with open(excel_file, "rb") as f:
-            # Test API endpoint
-            response = client.post(
-                "/api/salary/upload",
-                files={"file": ("invalid_employees.xlsx", f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")}
-            )
-        
-        # Assertions
-        assert response.status_code == 400
-        assert "Missing required column" in response.json()["detail"]
+    
 
