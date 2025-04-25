@@ -26,13 +26,13 @@ jobs:
 
       - name: 📦 Install dependencies with uv
         run: |
-          uv pip install pytest pytest-cov fastapi pandas openpyxl
-          uv pip install -r app/requirements.txt
+          uv sync
 
       - name: 🧪 Run Unit Tests
         run: |
-          python -m pytest test/test_salary_service.py
-          python -m pytest test/test_salary_routes.py
+          source .venv/bin/activate
+          pytest test/test_salary_service.py
+          pytest test/test_salary_routes.py
 
   build-push:
     name: 🚀 Build and Push Docker Images
