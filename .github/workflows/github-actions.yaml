@@ -8,13 +8,13 @@ on:
 
 jobs:
   test:
-    name: ✅ Run Unit Tests
+    name: Run Unit Tests
     runs-on: ubuntu-latest
     steps:
-      - name: 🔍 Checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: 🐍 Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.8"
@@ -24,34 +24,29 @@ jobs:
           curl -Ls https://astral.sh/uv/install.sh | sh
           echo "$HOME/.cargo/bin" >> $GITHUB_PATH
 
-      - name: 📦 Install dependencies with uv
+      - name: Install dependencies with uv
         run: |
           uv sync
 
-      - name: 🧪 Run Unit Tests
+      - name: Run Unit Tests
         run: |
-          source .venv/bin/activate
           pytest test/test_salary_service.py
           pytest test/test_salary_routes.py
 
   build-push:
-    name: 🚀 Build and Push Docker Images
+    name: Build and Push Docker Images
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: 🔍 Checkout Code
+      - name: Checkout Code
         uses: actions/checkout@v3
-        
-      - name: 📅 Get current date
-        id: date
-        run: echo "::set-output name=date::$(date +'%Y%m%d')"
 
-      - name: 🏗️ Build Images
+      - name: Build Images
         run: |
-          docker build -f app/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/python_api-backend:latest -t ${{ secrets.DOCKER_USERNAME }}/python_api-backend:${{ steps.date.outputs.date }} ./app
-          docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:latest -t ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:${{ steps.date.outputs.date }} ./frontend
+          docker build -f app/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/salary-api:latest ./app
+          docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/salary-frontend:latest ./frontend
 
-      - name: 🔐 Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -59,10 +54,7 @@ jobs:
 
       - name: 🚀 Push Images
         run: |
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker tag ${{ secrets.DOCKER_USERNAME }}/python_api-backend:latest tutu1008/python_api-backend:latest
-          docker push tutu1008/python_api-backend:latest
-          docker tag ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:latest tutu1008/python_api-frontend:latest
-          docker push tutu1008/python_api-frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/salary-api:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/salary-frontend:latest
 
   
