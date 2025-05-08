@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.routes.salary import router as salary_router
+from api.routes.salary import router as salary_router
 
 import uvicorn
 

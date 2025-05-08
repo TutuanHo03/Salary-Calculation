@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from app.models.salary import SalaryInput, SalaryOutput, BulkSalaryOutput, EmployeeData
-from app.services.salary_service import SalaryService
+from models.salary import SalaryInput, SalaryOutput, BulkSalaryOutput, EmployeeData
+from services.salary_service import SalaryService
 import pandas as pd
 from io import BytesIO
 from typing import List
