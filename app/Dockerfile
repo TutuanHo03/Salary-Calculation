@@ -7,7 +7,7 @@ COPY ./app/requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir -r /code/requirements.txt
 
 # Copy source code
-COPY ./app /code/app
+COPY . /code/app
 ENV PYTHONPATH="/code"
 
 EXPOSE 8000
