@@ -3,7 +3,7 @@ FROM python:3.8-slim
 WORKDIR /code
 
 # Install dependencies
-COPY ./app/requirements.txt /code/requirements.txt
+COPY ./requirements.txt /code/requirements.txt
 RUN pip install --no-cache-dir -r /code/requirements.txt
 
 # Copy source code
