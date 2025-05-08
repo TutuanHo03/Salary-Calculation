@@ -1,15 +1,15 @@
 FROM python:3.8-slim
 
-WORKDIR /app
+WORKDIR /code
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY ./app/requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir -r /code/requirements.txt
 
 # Copy source code
-COPY . .
-ENV PYTHONPATH=/app
+COPY ./app /code/app
+ENV PYTHONPATH="/code"
 
 EXPOSE 8000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
