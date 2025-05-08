@@ -10,11 +10,13 @@ jobs:
   test:
     name: Run Unit Tests
     runs-on: ubuntu-latest
+    env:
+      PYTHONPATH: ./app
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.9"
@@ -25,37 +27,25 @@ jobs:
           pip install pytest pytest-cov fastapi pandas openpyxl httpx
           pip install -r app/requirements.txt
           pip install -r frontend/requirements.txt
-        
-      - name: 🧪 Setup test environment
-        run: |
-          # Đảm bảo conftest.py thiết lập PYTHONPATH đúng
-          cat > test/conftest.py << 'EOF'
-          import sys
-          import os
-          
-          # Thêm thư mục gốc vào Python path
-          sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-          EOF
 
       - name: 🧪 Run Unit Tests
         run: |
-          python -m pytest test/test_salary_service.py
-          python -m pytest test/test_salary_routes.py
+          python -m pytest test/
 
   build-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
     needs: test
     steps:
-      - name: Checkout Code
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Build Images
+      - name: 🐳 Build Images
         run: |
           docker build -f app/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/python_api-backend:latest ./app
           docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:latest ./frontend
 
-      - name: Login to DockerHub
+      - name: 🔐 Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -65,5 +55,3 @@ jobs:
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/python_api-backend:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/python_api-frontend:latest
-
-  
