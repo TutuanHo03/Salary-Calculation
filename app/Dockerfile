@@ -1,14 +1,14 @@
 FROM python:3.8-slim
 
-WORKDIR /code
+WORKDIR /app
 
 # Install dependencies
-COPY ./requirements.txt /code/requirements.txt
-RUN pip install --no-cache-dir -r /code/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Copy source code
-COPY . /code
-ENV PYTHONPATH="/code"
+COPY . /app
+ENV PYTHONPATH="/app"
 
 EXPOSE 8000
 
