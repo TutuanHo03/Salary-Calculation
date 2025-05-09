@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 import io
 import base64
+import os
 
 # Page Configuration
 st.set_page_config(
@@ -14,6 +15,9 @@ st.set_page_config(
 
 st.title("🧮 Salary Calculator")
 st.markdown("---")
+
+# Lấy API URL từ biến môi trường hoặc dùng giá trị mặc định
+API_URL = os.environ.get("API_URL", "http://backend:8000")
 
 tab1, tab2 = st.tabs(["Single Calculation", "Bulk Upload"])
 
@@ -36,7 +40,7 @@ with tab1:
         if submit_button:
             try:
                 response = requests.post(
-                    "http://backend:8000/api/salary/calculate",
+                    f"{API_URL}/api/salary/calculate",
                     json={"gross_salary": gross_salary, "number_of_dependents": dependents}
                 )
                 
@@ -97,7 +101,7 @@ with tab2:
                 files = {'file': uploaded_file.getvalue()}
                 
                 response = requests.post(
-                    "http://backend:8000/api/salary/upload",
+                    f"{API_URL}/api/salary/upload",
                     files={'file': (uploaded_file.name, uploaded_file.getvalue(), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')}
                 )
                 
