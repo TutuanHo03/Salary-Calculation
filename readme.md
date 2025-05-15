@@ -11,7 +11,7 @@ A full-stack web application for calculating net salary from gross salary, with 
 - [Usage](#usage)
 - [API Documentation](#api-documentation)
 - [Testing](#testing)
-- [Deployment](#deployment)
+- [CI/CD Pipeline](#ci/cd-pipeline)
 
 ## Features
 
