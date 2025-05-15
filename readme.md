@@ -214,14 +214,27 @@ The GitHub Actions workflow is defined in `.github/workflows/github-actions.yaml
    - Go to your repository → Actions tab
    - Enable workflows
 
-3. **Deploy on render**
-- Create a new Web Service
-   - Use the Container Registry option
+3. **Deploy on Render.com**:
+   - Create a new Web Service in your Render dashboard
+   - Select "Container Registry" as deployment type
+   - Configure container settings:
+     - Registry: `Docker Hub`
+     - Image: `yourusername/python_api-backend:latest`
+     - Port: `8000`
    - Configure environment variables:
-     - For backend: `PYTHONPATH=/app` `PORT=8000`
-     - For frontend: `API_URL=https://your-backend-service.onrender.com`
+     - `PYTHONPATH`: `/app`
+     - `PORT`: `8000`
+   - Repeat the process for the frontend service:
+     - Image: `yourusername/python_api-frontend:latest`
+     - Port: `8501`
+     - Environment variables:
+       - `API_URL`: `https://your-backend-service.onrender.com`
 
-4. **Set up Render webhook**:
+4. **Verify deployment**:
+   - Backend: Visit `https://your-backend-service.onrender.com/docs`
+   - Frontend: Visit `https://your-frontend-service.onrender.com`
+
+5. **Set up Render webhook**:
    - In Render.com dashboard, go to your service
    - Navigate to Settings → Deploy Hooks
    - Create a new deploy hook and copy the URL
