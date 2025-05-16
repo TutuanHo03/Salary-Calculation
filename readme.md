@@ -11,8 +11,7 @@ A full-stack web application for calculating net salary from gross salary, with 
 - [Usage](#usage)
 - [API Documentation](#api-documentation)
 - [Testing](#testing)
-- [Deployment](#deployment)
-- [License](#license)
+- [CI/CD Pipeline](#ci/cd-pipeline)
 
 ## Features
 
@@ -113,7 +112,7 @@ Salary-Calculation/
    streamlit run app.py
    ```
 
-### Docker Setup
+### Docker Deployment Setup
 
 For a containerized setup with Docker Compose:
 
@@ -169,33 +168,97 @@ You can also use curl or Postman to test the API endpoints:
 curl -X POST http://localhost:8000/api/salary/calculate \
   -H "Content-Type: application/json" \
   -d '{"gross_salary": 15000000, "number_of_dependents": 2}'
+
+# Upload Excel file for bulk processing
+curl -X POST http://localhost:8000/api/salary/upload \
+  -F "file=@Salary-Calculation/test/data/data_test_gross_net.xlsx" \
+  -H "Content-Type: multipart/form-data"
 ```
 
-##  Deployment
+## CI/CD Pipeline
 
-### Deploying with Docker Registry
+### Workflow Configuration
 
-1. Build and push Docker images:
-   ```bash
-   docker build -t yourusername/python_api-backend:latest ./app
-   docker build -t yourusername/python_api-frontend:latest ./frontend
-   
-   docker push yourusername/python_api-backend:latest
-   docker push yourusername/python_api-frontend:latest
-   ```
+The GitHub Actions workflow is defined in `.github/workflows/github-actions.yaml` and performs the following steps:
 
-2. Deploy on Render:
-   - Create a new Web Service
-   - Use the Container Registry option
+1. **Trigger conditions**:
+   - On push to the `main` branch
+   - On pull requests to the `main` branch
+   - Manual trigger via workflow_dispatch
+
+2. **Testing**:
+   - Sets up Python environment
+   - Installs dependencies
+   - Runs pytest with coverage report
+   - Uploads coverage reports as artifacts
+
+3. **Building and Pushing Docker Images**:
+   - Builds backend and frontend Docker images
+   - Tags images with commit SHA and 'latest'
+   - Pushes images to Docker Hub
+   - (Only runs on successful merges to main)
+
+4. **Deployment**:
+   - Triggers Render.com deployment webhook
+   - Waits for deployment completion
+   - Runs basic health checks on deployed services
+
+### Setting Up the CI/CD Pipeline
+
+1. **Configure GitHub repository secrets**:
+   - `DOCKER_USERNAME`: Your Docker Hub username
+   - `DOCKER_PASSWORD`: Your Docker Hub access token
+   - `RENDER_WEBHOOK`: Render.com deployment webhook URL
+
+2. **Enable GitHub Actions**:
+   - Go to your repository → Actions tab
+   - Enable workflows
+
+3. **Deploy on Render.com**:
+   - Create a new Web Service in your Render dashboard
+   - Select "Container Registry" as deployment type
+   - Configure container settings:
+     - Registry: `Docker Hub`
+     - Image: `yourusername/python_api-backend:latest`
+     - Port: `8000`
    - Configure environment variables:
-     - For backend: `PYTHONPATH=/app`
-     - For frontend: `API_URL=https://your-backend-service.onrender.com`
+     - `PYTHONPATH`: `/app`
+     - `PORT`: `8000`
+   - Repeat the process for the frontend service:
+     - Image: `yourusername/python_api-frontend:latest`
+     - Port: `8501`
+     - Environment variables:
+       - `API_URL`: `https://your-backend-service.onrender.com`
 
-### Continuous Deployment
+4. **Verify deployment**:
+   - Backend: Visit `https://your-backend-service.onrender.com/docs`
+   - Frontend: Visit `https://your-frontend-service.onrender.com`
 
-The project uses GitHub Actions for CI/CD:
-- Runs tests on every push to master
-- Builds and pushes Docker images
-- Triggers deployment on Render via webhooks
+5. **Set up Render webhook**:
+   - In Render.com dashboard, go to your service
+   - Navigate to Settings → Deploy Hooks
+   - Create a new deploy hook and copy the URL
+   - Add this URL as the `RENDER_WEBHOOK` secret in GitHub
+
+### Troubleshooting Deployment
+
+- **Container fails to start**:
+  - Check logs in Render dashboard
+  - Verify environment variables are correctly set
+  - Try building and running containers locally first
+
+- **Services can't communicate**:
+  - Check network settings in Docker Compose
+  - Verify API_URL is correctly set for frontend service
+  - Check for CORS issues in backend logs
+
+- **CI/CD pipeline failures**:
+  - Check GitHub Actions logs for detailed error messages
+  - Verify Docker Hub credentials are correct
+  - Check if tests are passing locally
+
+
+
+
 
 
